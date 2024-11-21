@@ -320,9 +320,9 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
         >
           <span className="line-clamp-2">{phancong.tenCongViec}</span>
         </div>
-        <div className="flex-1 w-1/12 px-4 text-center">
+        <div className="flex-1  px-4 text-center">
           <span
-            className={`px-2 py-1 rounded-full border-1 ${
+            className={`px-2 py-1 w-2/12 rounded-full border-1 ${
               phancong.mucDoUuTien === "CAO"
                 ? "text-red-500 border-red-500 bg-red-100"
                 : phancong.mucDoUuTien === "TRUNG BÌNH"
@@ -387,7 +387,7 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
             </div>
           ))}
         </div>
-        <div className="flex-1 w-1/12 px-4 text-center">
+        <div className="flex-1  px-4 text-center">
           <input
             type="checkbox"
             checked={congviec.trangThaiCongViec}

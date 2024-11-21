@@ -33,6 +33,7 @@ import { FaFileZipper } from "react-icons/fa6";
 import { AttachFile } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { addDetailExchange } from "../../redux/detailexchange/detailexchangeSlice";
+import getConnection from "../../hub/signalRConnection";
 const DetailTask = ({
   expanded,
   setExpanded,
@@ -74,26 +75,23 @@ const DetailTask = ({
     loadData();
   }, [dispatch, task.maCongViec]);
   useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(API_ENDPOINTS.HUB_URL)
-      .withAutomaticReconnect()
-      .configureLogging(LogLevel.Information)
-      .build();
+    const connection=getConnection()
 
     const startConnection = async () => {
       try {
-        await newConnection.start();
+        if (connection && connection.state === "Disconnected") {
+          await connection.start();
+          console.log("Connection started");
+        }
         console.log("Connected!");
-        setConnection(newConnection);
-        await newConnection.invoke("ThamGiaNhom", maCongViec);
-        console.log(`Joined group: ${maCongViec}`);
-        newConnection.off("ReceiveMessage");
-        newConnection.off("UserJoined");
-        newConnection.on("ReceiveMessage", async () => {
+        await connection.invoke("ThamGiaNhom", maCongViec);
+        connection.off("ReceiveMessage");
+        connection.off("UserJoined");
+        connection.on("ReceiveMessage", async () => {
           await dispatch(fetchAllFile());
           await dispatch(findExchangeByTask(task.maCongViec));
         });
-        newConnection.on("UserJoined", (message) => {
+        connection.on("UserJoined", (message) => {
           console.log("User joined message:", message);
         });
       } catch (err) {
@@ -104,15 +102,12 @@ const DetailTask = ({
     startConnection();
 
     return () => {
-      if (newConnection) {
-        newConnection.off("ReceiveMessage");
-        newConnection.off("UserJoined");
-        console.log("Connection stopped.");
+      if (connection) {
+        connection.off("ReceiveMessage");
+        connection.off("UserJoined");
       }
     };
   }, [maCongViec]);
-  console.log(roleTeam)
-  console.log(userTeam)
   const handleSendComment = async () => {
     if (newComment.trim() === "" && selectedFiles.length === 0) return;
     try {

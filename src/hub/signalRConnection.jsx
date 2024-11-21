@@ -7,7 +7,7 @@ export function getConnection() {
   if (!connection) {
     connection = new HubConnectionBuilder()
       .withUrl(API_ENDPOINTS.HUB_URL, {
-        transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
+        transport: HttpTransportType.WebSockets | HttpTransportType.ServerSentEvents |  HttpTransportType.LongPolling,
       })
       .withAutomaticReconnect()
       .configureLogging(LogLevel.Information)
