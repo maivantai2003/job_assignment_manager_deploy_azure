@@ -1,6 +1,6 @@
-const API_URL="https://localhost:7131/api"
-const HUB="https://localhost:7131/hub"
-const EMAIL="https://localhost:7131"
+const API_URL="https://app-jobassignment-g8eccja7dramgch9.canadacentral-01.azurewebsites.net/api"
+const HUB="https://app-jobassignment-g8eccja7dramgch9.canadacentral-01.azurewebsites.net/hub"
+const EMAIL="https://app-jobassignment-g8eccja7dramgch9.canadacentral-01.azurewebsites.net"
 const API_ENDPOINTS = {
     NHAVIEN:`${API_URL}/NhanVien`,
     PHONGBAN:`${API_URL}/PhongBan`,
