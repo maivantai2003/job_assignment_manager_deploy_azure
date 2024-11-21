@@ -74,6 +74,8 @@ const DetailTask = ({
     };
     loadData();
   }, [dispatch, task.maCongViec]);
+  console.log(exchanges)
+  console.log(files)
   useEffect(() => {
     const connection=getConnection()
 
@@ -85,8 +87,6 @@ const DetailTask = ({
         }
         console.log("Connected!");
         await connection.invoke("ThamGiaNhom", maCongViec);
-        connection.off("ReceiveMessage");
-        connection.off("UserJoined");
         connection.on("ReceiveMessage", async () => {
           await dispatch(fetchAllFile());
           await dispatch(findExchangeByTask(task.maCongViec));
@@ -107,7 +107,7 @@ const DetailTask = ({
         connection.off("UserJoined");
       }
     };
-  }, [maCongViec]);
+  }, [task.maCongViec]);
   const handleSendComment = async () => {
     if (newComment.trim() === "" && selectedFiles.length === 0) return;
     try {
