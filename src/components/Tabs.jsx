@@ -11,7 +11,6 @@ export default function Tabs({ tabs, setSelected, children }) {
   const [endDate, setEndDate] = useState("");
   const [priority, setPriority] = useState("TẤT CẢ");
   const [status, setStatus] = useState("Tất cả");
-
   return (
     <div className="w-full px-1 sm:px-0">
       <div className="mb-4 space-y-4">

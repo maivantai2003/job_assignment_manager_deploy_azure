@@ -94,6 +94,7 @@ const AddAssignmentTask = ({
       }
       toast.success("Thêm thành công");
       setopenAssignment(false);
+      clearForm()
     } catch (e) {
       toast.error("Thêm thất bại");
       console.log(e);
@@ -102,6 +103,9 @@ const AddAssignmentTask = ({
   const handleSelect = (e) => {
     setAssets(e.target.files);
   };
+  const clearForm=()=>{
+    setSelectedEmployees([])
+  }
   return (
     <>
       <ModalWrapper open={openAssignment} setOpen={setopenAssignment}>
@@ -135,7 +139,9 @@ const AddAssignmentTask = ({
                 <Button
                   type="button"
                   className="bg-white px-5 text-sm font-semibold text-gray-900 sm:w-auto"
-                  onClick={() => setopenAssignment(false)}
+                  onClick={() =>{clearForm()
+                    setopenAssignment(false)
+                  }}
                   label="Hủy"
                 />
               </div>

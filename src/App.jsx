@@ -38,9 +38,7 @@ function Layout() {
     return <Navigate to="/home" replace />;
   }
   const token=authUser.user.token;
-  console.log(authUser.user)
   var payload = JSON.parse(atob(token.split('.')[1]));
-  console.log(payload)
   localStorage.setItem("userId",payload.MaTaiKhoan)
   localStorage.setItem("permissionId",Number(payload.MaNhomQuyen))
   return (

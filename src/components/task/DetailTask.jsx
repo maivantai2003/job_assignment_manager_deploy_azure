@@ -55,6 +55,7 @@ const DetailTask = ({
   const [uploadStatus, setUploadStatus] = useState("");
   const [showComments, setShowComment] = useState(true);
   const [dragging, setDragging] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const dispatch = useDispatch();
@@ -74,22 +75,26 @@ const DetailTask = ({
     };
     loadData();
   }, [dispatch, task.maCongViec]);
-  console.log(exchanges)
-  console.log(files)
   useEffect(() => {
-    const connection=getConnection()
-
+    const connection = getConnection()
     const startConnection = async () => {
       try {
-        if (connection && connection.state === "Disconnected") {
+        if (connection.state === "Disconnected") {
           await connection.start();
-          console.log("Connection started");
         }
-        console.log("Connected!");
+        setConnection(connection);
         await connection.invoke("ThamGiaNhom", maCongViec);
+        console.log(`Joined group: ${maCongViec}`);
+        connection.off("ReceiveMessage");
+        connection.off("UserJoined");
         connection.on("ReceiveMessage", async () => {
-          await dispatch(fetchAllFile());
-          await dispatch(findExchangeByTask(task.maCongViec));
+          try {
+            await dispatch(fetchAllFile());
+            await dispatch(findExchangeByTask(task.maCongViec));
+          } catch (error) {
+            console.error("Error loading data on ReceiveMessage: ", error);
+            toast.error("Có lỗi khi tải dữ liệu tin nhắn. Vui lòng tải lại trang!");
+          }
         });
         connection.on("UserJoined", (message) => {
           console.log("User joined message:", message);
@@ -107,9 +112,10 @@ const DetailTask = ({
         connection.off("UserJoined");
       }
     };
-  }, [task.maCongViec]);
+  }, [maCongViec, dispatch, task.maCongViec]);
   const handleSendComment = async () => {
     if (newComment.trim() === "" && selectedFiles.length === 0) return;
+    setIsSending(true);
     try {
       if (newComment.trim() !== "" || selectedFiles.length > 0) {
         var result = await dispatch(
@@ -149,10 +155,12 @@ const DetailTask = ({
               await Promise.all(addDetailPromises);
               setSelectedFiles([]);
             }
-            await connection.invoke("TraoDoiThongTin", maCongViec);
+            //await connection.invoke("TraoDoiThongTin", maCongViec);
           } catch (err) {
             toast.warning("Upload File Thất Bại");
             return;
+          }finally {
+            setIsSending(false);
           }
           await connection.invoke("TraoDoiThongTin", maCongViec);
         }

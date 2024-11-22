@@ -27,7 +27,6 @@ const TaskAssignment = () => {
       try {
         if (connection && connection.state === "Disconnected") {
           await connection.start();
-          console.log("Connection started"); 
         }
         connection.on("loadCongViec", async () => {
          await dispatch(fetchEmployeeAssignment(maNhanVien))
@@ -41,7 +40,6 @@ const TaskAssignment = () => {
         connection.on("updateCongViec", async () => {
           await dispatch(fetchEmployeeAssignment(maNhanVien));
         });
-        console.log("Connection update"); 
         connection.onclose(async (error) => {
           console.error("Connection closed due to error: ", error);
           setTimeout(() => {
@@ -55,7 +53,6 @@ const TaskAssignment = () => {
     startConnection();
     return () => {
       if (connection) {
-        console.log("off")
         connection.off("loadCongViec");
         connection.off("deletePhanCong");
         connection.off("loadPhanCong");
@@ -97,7 +94,7 @@ const TaskAssignment = () => {
           <div className="flex-1 px-2">Kết Thúc</div>
           <div className="flex-1 px-2">Chịu Trách Nhiệm</div>
           <div className="flex-1 px-2">Nhóm</div>
-          <div className="flex-1 px-2">Trình Trạng</div>
+          <div className="flex-1 px-2">Trạng Thái Công Việc</div>
           <div className="flex-1 px-2">File</div>
         </div>
         <div className="bg-slate-50 rounded-md shadow-md p-4 space-y-2">

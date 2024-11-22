@@ -28,6 +28,7 @@ const AddTaskEmployee = ({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
   const [team, setTeam] = useState(task?.team || []);
@@ -102,6 +103,7 @@ const AddTaskEmployee = ({
       }
       toast.success("Thêm thành công");
       setOpen(false);
+      clearForm()
     } catch (e) {
       toast.error("Thêm thất bại");
       console.log(e);
@@ -110,6 +112,10 @@ const AddTaskEmployee = ({
   const handleSelect = (e) => {
     setAssets(e.target.files);
   };
+  const clearForm=()=>{
+    setSelectedEmployees([]);
+    reset()
+  }
   return (
     <>
       <ModalWrapper open={open} setOpen={setOpen}>
@@ -144,7 +150,9 @@ const AddTaskEmployee = ({
                 <Button
                   type="button"
                   className="bg-white px-5 text-sm font-semibold text-gray-900 sm:w-auto"
-                  onClick={() => setOpen(false)}
+                  onClick={() =>{
+                    setOpen(false)
+                    clearForm()}}
                   label="Hủy"
                 />
               </div>

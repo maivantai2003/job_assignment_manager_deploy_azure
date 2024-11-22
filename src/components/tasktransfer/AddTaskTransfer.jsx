@@ -28,6 +28,7 @@ const AddTaskTransfer = ({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
   const dispatch = useDispatch();
@@ -105,10 +106,8 @@ const AddTaskTransfer = ({
         }
       }
       if (selectedEmployees.length === 0) {
-        var result = await dispatch(
-          deleteAssignment(Number(arrNhanVien[0]))
-        );
-        var temp=await dispatch(
+        var result = await dispatch(deleteAssignment(Number(arrNhanVien[0])));
+        var temp = await dispatch(
           addTaskTransfer({
             lyDoChuyenGiao: transferNote,
             vaiTro: arrNhanVien[3],
@@ -117,7 +116,7 @@ const AddTaskTransfer = ({
             tenCongViec: tenCongViec,
           })
         );
-        console.log(temp)
+        console.log(temp);
         toast.success("Chuyển giao công việc thành công");
       } else {
         for (const employee of selectedEmployees) {
@@ -161,11 +160,19 @@ const AddTaskTransfer = ({
         toast.success("Chuyển giao công việc thành công");
       }
       setOpenTransfer(false);
+      clearForm()
     } catch (e) {
       toast.error("Chuyển giao công việc không thành công");
       console.log(e);
     }
   };
+  const clearForm=()=>{
+      setSelectedEmployees([]);
+      setTransferNote("");
+      setShowEndDate(false);
+      setSelectedCurrentEmployee("");
+      reset()
+  }
   return (
     <ModalWrapper open={openTransfer} setOpen={setOpenTransfer}>
       <div className="max-h-screen overflow-y-auto">
@@ -191,22 +198,25 @@ const AddTaskTransfer = ({
                 {loading ? (
                   <option value="">Đang tải nhân viên...</option>
                 ) : employees.length > 0 ? (
-                  employees.filter(item => item.trangThai === true).map((item) => (
-                    <option
-                      key={item.maNhanVien}
-                      value={
-                        item.maPhanCong +
-                        "-" +
-                        item.maNhanVien +
-                        "-" +
-                        item.nhanVien.tenNhanVien+
-                        "-"+item.vaiTro
-                      }
-                    >
-                      {item.maNhanVien}-{item.nhanVien.tenNhanVien}-
-                      {item.vaiTro}
-                    </option>
-                  ))
+                  employees
+                    .filter((item) => item.trangThai === true)
+                    .map((item) => (
+                      <option
+                        key={item.maNhanVien}
+                        value={
+                          item.maPhanCong +
+                          "-" +
+                          item.maNhanVien +
+                          "-" +
+                          item.nhanVien.tenNhanVien +
+                          "-" +
+                          item.vaiTro
+                        }
+                      >
+                        {item.maNhanVien}-{item.nhanVien.tenNhanVien}-
+                        {item.vaiTro}
+                      </option>
+                    ))
                 ) : (
                   <option value="">Không có nhân viên nào</option>
                 )}
@@ -276,7 +286,10 @@ const AddTaskTransfer = ({
               <Button
                 type="button"
                 className="bg-white px-5 text-sm font-semibold text-gray-900 sm:w-auto"
-                onClick={() => setOpenTransfer(false)}
+                onClick={() =>{
+                  clearForm()
+                  setOpenTransfer(false)
+                }}
                 label="Hủy"
               />
             </div>

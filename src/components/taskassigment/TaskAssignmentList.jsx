@@ -45,7 +45,6 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
   const [expanded, setExpanded] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [completed, setCompleted] = useState(congviec.trangThaiCongViec);
-  //const [connection, setConnection] = useState(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [selectedFileUrl, setSelectedFileUrl] = useState("");
   const [filteredFiles, setFilteredFiles] = useState([]);
@@ -117,16 +116,9 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
         connection.on("loadPhanCong", async () => {
           await dispatch(fetchByIdTask(maCongViec));
         });
-        //
-        // connection.on("deletePhanCong", async () => {
-        //   await dispatch(fetchByIdTask(maCongViec));
-        // });
         connection.on("loadDuAn", async () => {
           await dispatch(fetchByIdTask(maCongViec));
         });
-        // connection.on("loadLichSuCongViec", async () => {
-        //   await dispatch(fetchByIdTask(maCongViec));
-        // });
         connection.on("loadCongViec", async () => {
           await dispatch(fetchByIdTask(maCongViec));
         });
@@ -187,8 +179,6 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
         connection.off("loadCongViec");
         connection.off("loadPhanCong");
         connection.off("loadHanhDong");
-        // connection.off("deletePhanCong");
-        // connection.off("loadLichSuCongViec");
         connection.off("loadDuAn");
       }
     };
@@ -269,7 +259,6 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
     );
     if (isConfirmed) {
       const checked = event.target.checked;
-      //setCompleted(checked);
       let PhanCong = {
         maCongViec: maCongViec,
         maNhanVien: Number(localStorage.getItem("userId")),
@@ -294,7 +283,6 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
           );
           toast.success("Đánh dấu thành công");
         }
-        console.log("Updateeeeee");
       } catch (error) {
         console.log(error)
         toast.error("Đánh dấu không thành công");
@@ -303,10 +291,8 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
       event.target.checked = !event.target.checked;
     }
   };
-  //console.log(phancong)
   const phanCongs =
     phancong?.phanCongs?.filter((task) => task.trangThai === true) || [];
-  //console.log(phanCongs);
   const chiuTrachNhiem = phanCongs?.filter(
     (m) => m.vaiTro === "Người Chịu Trách Nhiệm"
   );
@@ -322,7 +308,7 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
         </div>
         <div className="flex-1  px-4 text-center">
           <span
-            className={`px-2 py-1 w-2/12 rounded-full border-1 ${
+            className={`px-1 py-1 w-3/12 rounded-full border-1 ${
               phancong.mucDoUuTien === "CAO"
                 ? "text-red-500 border-red-500 bg-red-100"
                 : phancong.mucDoUuTien === "TRUNG BÌNH"

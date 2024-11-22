@@ -126,8 +126,6 @@ const Sidebar = () => {
       if (connection && connection.state === "Disconnected") {
         try {
           await connection.start();
-          console.log("Connected!");
-
           connection.on("loadDuAn", async () => {
             await dispatch(fetchProjects({ search: "", page: 30 }));
           });
