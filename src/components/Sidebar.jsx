@@ -199,7 +199,10 @@ const Sidebar = () => {
       setError("Tên dự án phải có ít nhất 1 ký tự!");
       return;
     }
-
+    if(projectName.trim()===""){
+      toast.warning("Vui lòng nhập tên dự án")
+      return
+    }
     if (projectName.length === 0) {
       setError("Tên dự án không được để trống!");
       return;

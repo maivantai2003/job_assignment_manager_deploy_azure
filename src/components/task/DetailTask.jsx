@@ -177,9 +177,15 @@ const DetailTask = ({
     setShowEmojiPicker(false);
   };
   const handleFileChange = (event) => {
-    //setSelectedFile(event.target.files[0]);
-    setSelectedFiles([...selectedFiles, ...event.target.files]);
-    console.log(selectedFiles);
+    const maxFileSize = 10 * 1024 * 1024;
+    const validFiles = [...event.target.files].filter(file => file.size <= maxFileSize);
+  
+    if (validFiles.length < event.target.files.length) {
+      toast.warning("File có kích thước không vượt quá 10MB")
+      return
+    }
+  
+    setSelectedFiles([...selectedFiles, ...validFiles]);
   };
   const handleUpload = async () => {
     try {
