@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchEmployees as fetchAPI, addEmployee as addAPI,updateEmployee as updateAPI } from './employeeAPI';
+import { fetchEmployees as fetchAPI, addEmployee as addAPI,updateEmployee as updateAPI,deleteEmployee as deleteAPI } from './employeeAPI';
 
 export const fetchEmployees = createAsyncThunk('employees/fetchEmployees', async ({ search, page }) => {
   const response = await fetchAPI(search, page);
@@ -12,6 +12,10 @@ export const addEmployee = createAsyncThunk('employees/addEmployee', async (empl
 });
 export const updateEmployee=createAsyncThunk('employees/updateEmployee',async({id,employee})=>{
   const response=await updateAPI(id,employee);
+  return response;
+})
+export const deleteEmployee=createAsyncThunk('employees/deleteEmployee',async(id)=>{
+  const response=await deleteAPI(id);
   return response;
 })
 
@@ -41,6 +45,11 @@ const employeeSlice = createSlice({
         state.error = action.error.message;
       }).addCase(addEmployee.fulfilled, (state, action) => {
         state.list.push(action.payload);
+      }).addCase(deleteEmployee.fulfilled, (state, action) => {
+        const index = state.list.findIndex((file) => file.maNhanVien === action.payload.maNhanVien);
+        if (index !== -1) {
+          state.list[index] = action.payload;
+        }
       });
   },
 });

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchAccount as fetchAPI, addAccount as addAPI, updateAccount as updateAPI } from './accountAPI';
+import { fetchAccount as fetchAPI, addAccount as addAPI, updateAccount as updateAPI,deleteAccount as deleteAPI } from './accountAPI';
 
 export const fetchAccounts = createAsyncThunk('accounts/fetchAccounts', async ({ search, page }) => {
   const response = await fetchAPI(search, page);
@@ -11,6 +11,10 @@ export const addAccount = createAsyncThunk('accounts/addAccount', async (account
 });
 export const updateAccount = createAsyncThunk('accounts/updateAccount', async ({ id, account }) => {
   const response = await updateAPI(id, account);
+  return response;
+});
+export const deleteAccount = createAsyncThunk('accounts/deleteAccount', async (id) => {
+  const response = await deleteAPI(id);
   return response;
 });
 
@@ -43,7 +47,12 @@ const accountSlice = createSlice({
       })
       .addCase(addAccount.fulfilled, (state, action) => {
         state.list.push(action.payload);
-      })
+      }).addCase(deleteAccount.fulfilled, (state, action) => {
+        const index = state.list.findIndex((file) => file.maNhanVien === action.payload.maNhanVien);
+        if (index !== -1) {
+          state.list[index] = action.payload;
+        }
+      });
       // .addCase(updateAccount.fulfilled, (state, action) => {
       //   const index = state.list.findIndex((account) => account.maNhanVien === action.payload.maNhanVien);
       //   if (index !== -1) {

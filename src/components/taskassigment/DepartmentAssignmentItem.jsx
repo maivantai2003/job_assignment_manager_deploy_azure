@@ -129,11 +129,10 @@ const DepartmentAssignmentItem = ({ congViecPhongBan, filterTask }) => {
   if (!congviec) {
     return <p>not found</p>;
   }
-  if (congviec.trangThaiCongViec === false && filterTask === "completed") {
-    return null;
-  } else if (
-    congviec.trangThaiCongViec === true &&
-    filterTask === "incomplete"
+  console.log(congviec)
+  if (
+    (filterTask === "completed" && !congviec.trangThaiCongViec) ||
+    (filterTask === "incomplete" && congviec.trangThaiCongViec)
   ) {
     return null;
   }
@@ -151,7 +150,6 @@ const DepartmentAssignmentItem = ({ congViecPhongBan, filterTask }) => {
   };
   const phanCongs =
     congviec?.phanCongs?.filter((task) => task.trangThai === true) || [];
-  console.log(phanCongs);
   const chiuTrachNhiem = phanCongs?.filter(
     (m) => m.vaiTro === "Người Chịu Trách Nhiệm"
   );

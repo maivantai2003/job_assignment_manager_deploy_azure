@@ -70,7 +70,7 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
           dispatch(fetchAllFile()).unwrap(),
           dispatch(fetchChiTietFileByPhanCong(maPhanCong)).unwrap(),
           dispatch(
-            checkPermission({ maQuyen: maquyen, tenChucNang: "Công Việc" })
+            checkPermission({ maQuyen: maquyen, tenChucNang: "Công Việc Phân Công" })
           ).unwrap(),
         ]);
 
@@ -124,7 +124,7 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
         });
         connection.on("loadHanhDong", async () => {
           const result = await dispatch(
-            checkPermission({ maQuyen: maquyen, tenChucNang: "Công Việc" })
+            checkPermission({ maQuyen: maquyen, tenChucNang: "Công Việc Phân Công" })
           ).unwrap();
           setpermissionAction(result);
         });
@@ -134,7 +134,7 @@ const TaskAssignmentList = ({ congviec, filterTask }) => {
             dispatch(fetchAllFile()).unwrap(),
             dispatch(fetchChiTietFileByPhanCong(maPhanCong)).unwrap(),
             dispatch(
-              checkPermission({ maQuyen: maquyen, tenChucNang: "Công Việc" })
+              checkPermission({ maQuyen: maquyen, tenChucNang: "Công Việc Phân Công" })
             ).unwrap(),
           ]);
 

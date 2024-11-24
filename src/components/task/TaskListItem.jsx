@@ -10,6 +10,7 @@ import {
   IoMdAdd,
   IoMdCreate,
   IoMdMore,
+  IoMdNotifications,
   IoMdSwap,
   IoMdTime,
   IoMdTrash,
@@ -27,6 +28,7 @@ import getConnection from "../../hub/signalRConnection";
 import AddAssignmentTask from "./AddAssignmentTask";
 import { useNavigate } from "react-router-dom";
 import { CiViewList } from "react-icons/ci";
+import AddRemider from "./AddRemider";
 const priorities = [
   { id: "low", name: "Thấp" },
   { id: "medium", name: "Trung Bình" },
@@ -45,6 +47,7 @@ const TaskListItem = ({ congviec, duAn }) => {
   const [openAssignment, setopenAssignment] = useState(false);
   const [openTransfer, setOpenTransfer] = useState(false);
   const [openTaskHistory, setOpenTaskHistory] = useState(false);
+  const [openRemider,setOpenRemider]=useState(false);
   const [taskRoot, setTaskRoot] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [subTasks, setSubTasks] = useState([]);
@@ -369,7 +372,14 @@ const TaskListItem = ({ congviec, duAn }) => {
                       setOpen(true);
                     }}
                     icon={<IoMdAdd className="text-base" />}
-                    className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7" // Giảm padding và xác định chiều cao
+                    className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7"
+                  />
+                   <Button
+                    onClick={() => {
+                      setOpenRemider(true);
+                    }}
+                    icon={<IoMdNotifications className="text-base" />}
+                    className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7"
                   />
                 </>
               )}
@@ -379,14 +389,14 @@ const TaskListItem = ({ congviec, duAn }) => {
                     setOpenUpdate(true);
                   }}
                   icon={<IoMdCreate className="text-base" />}
-                  className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7" // Giảm padding và xác định chiều cao
+                  className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7" 
                 />
               )}
               {permissionAction.includes("Xóa") && (
                 <Button
                   onClick={() => {}}
                   icon={<IoMdTrash className="text-base" />}
-                  className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7" // Giảm padding và xác định chiều cao
+                  className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7"
                 />
               )}
               {permissionAction.includes("Sửa") && (
@@ -395,7 +405,7 @@ const TaskListItem = ({ congviec, duAn }) => {
                     setOpenTransfer(true);
                   }}
                   icon={<IoMdSwap className="text-base" />}
-                  className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7" // Giảm padding và xác định chiều cao
+                  className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7"
                 />
               )}
               <Button
@@ -403,7 +413,7 @@ const TaskListItem = ({ congviec, duAn }) => {
                   setOpenTaskHistory(true);
                 }}
                 icon={<IoMdTime className="text-base" />}
-                className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7" // Giảm padding và xác định chiều cao
+                className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7"
               />
             </>
           )}
@@ -502,6 +512,12 @@ const TaskListItem = ({ congviec, duAn }) => {
         nhanViens={phancong?.phanCongs}
         thoiGianKetThuc={congviec.thoiGianKetThuc}
       />
+      <AddRemider setOpenRemider={setOpenRemider}
+      openRemider={openRemider} nhanViens={
+        phancong?.phanCongs
+          ? phancong.phanCongs.map((item) => item.nhanVien)
+          : []
+      }/>
       {expanded && (
         <DetailTask
           expanded={expanded}

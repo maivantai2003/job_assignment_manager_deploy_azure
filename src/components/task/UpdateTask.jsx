@@ -113,8 +113,8 @@ const UpdateTask = ({ openUpdate, setOpenUpdate, phanDuAn,duAn, task,phanCong })
               sendGmail({
                 name: employee.tenNhanVien,
                 toGmail: employee.email,
-                subject: "Thông Tin Phân Công Dự Án",
-                body: generateEmailTemplate(employee),
+                subject: "Cập nhật công việc",
+                body: "Công việc "+CongViec.tenCongViec+" đã được cập nhật vui lòng kiểm tra công việc",
               })
             )
           );

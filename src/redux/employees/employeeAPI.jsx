@@ -7,6 +7,10 @@ export const addEmployee=async (employee)=>{
     const response=await axiosInstance.post("NhanVien",employee)
     return response.data;
 }
+export const deleteEmployee=async (id)=>{
+    const response=await axiosInstance.delete("NhanVien/"+id)
+    return response.data;
+}
 export const updateEmployee=async (id,employee)=>{
     const response=await axiosInstance.put("NhanVien"+"/"+id,employee)
     return response.data;

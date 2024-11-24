@@ -30,21 +30,21 @@ const Login = () => {
         return
       }
       if(AuthRequest.matKhau.trim()===""){
-        toast.warning("Vui lòng nhập mật khẩu")
+        toast.warning("Vui lòng nhập đúng mật khẩu")
         return
       }
       console.log(AuthRequest)
       const result = await dispath(AuthLogin(AuthRequest))
+      console.log(result)
       if(result.payload && result.payload.isSuccess){
         toast.success("Đăng nhập thành công")
         navigate('/home')
       }else{
-        toast.warning("Mật khẩu hoặc tài khoản không đúng")
         return
       }
     }catch(e){
       toast.warning("Lỗi khi đăng nhập")
-      return
+      //return
     }
   };
 
@@ -53,7 +53,11 @@ const Login = () => {
       navigate('/home');
     }
   }, [authUser, navigate]);
-
+  useEffect(() => {
+    if (error) {
+      toast.error("Lỗi đăng nhập vui lòng thử lại");
+    }
+  }, [error]);
   return (
     <div className='w-full min-h-screen flex items-center justify-center flex-col lg:flex-row bg-[#f3f4f6]'>
       <div className='w-full md:w-auto flex gap-0 md:gap-40 flex-col md:flex-row items-center justify-center'>
@@ -113,9 +117,9 @@ const Login = () => {
                 error={errors.matKhau ? errors.matKhau.message : ""}
               />
     
-              <span className='text-sm text-gray-500 hover:text-blue-600 hover:underline cursor-pointer'>
+              {/* <span className='text-sm text-gray-500 hover:text-blue-600 hover:underline cursor-pointer'>
                 Quên mật khẩu?
-              </span>
+              </span> */}
     
               <Button
                 type='submit'

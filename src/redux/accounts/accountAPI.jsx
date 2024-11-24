@@ -16,3 +16,7 @@ export const updateAccount = async (id, taiKhoan) => {
     const response = await axiosInstance.put("TaiKhoan" + "/" + id, taiKhoan);
     return response.data;
 };
+export const deleteAccount=async (id)=>{
+    const response=await axiosInstance.delete("TaiKhoan/"+id)
+    return response.data;
+}

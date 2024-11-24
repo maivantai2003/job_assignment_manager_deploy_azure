@@ -6,12 +6,17 @@ import PageSizeSelect from "../components/PageSizeSelect";
 import AddAccount from "../components/account/AddAccount";
 import ConfirmatioDialog, { UserAction } from "../components/Dialogs";
 import Title from "../components/Title";
-import { HubConnectionBuilder,LogLevel,HttpTransportType } from '@microsoft/signalr';
-import { fetchAccounts } from "../redux/accounts/accountSlice";
+import {
+  HubConnectionBuilder,
+  LogLevel,
+  HttpTransportType,
+} from "@microsoft/signalr";
+import { deleteAccount, fetchAccounts } from "../redux/accounts/accountSlice";
 import { checkPermission } from "../redux/permissiondetail/permissionDetailSlice";
 import API_ENDPOINTS from "../constant/linkapi";
 import getConnection from "../hub/signalRConnection";
 import UpdateAccount from "../components/account/UpdateAccount";
+import { toast } from "react-toastify";
 const Accounts = () => {
   const [pageSize, setPageSize] = useState(10);
   const accounts = useSelector((state) => state.accounts.list);
@@ -20,26 +25,27 @@ const Accounts = () => {
   const [selected, setSelected] = useState(null);
   const [openUpdate, setOpenUpdate] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
-  const [permissionAction,setpermissionAction]=useState([])
-  const maquyen=Number(localStorage.getItem("permissionId"))
+  const [permissionAction, setpermissionAction] = useState([]);
+  const maquyen = Number(localStorage.getItem("permissionId"));
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchData = async () => {
       try {
         await dispatch(fetchAccounts({ search: "", page: pageSize }));
-        const result = await dispatch(checkPermission({ maQuyen: maquyen, tenChucNang: "Tài Khoản" })).unwrap();
+        const result = await dispatch(
+          checkPermission({ maQuyen: maquyen, tenChucNang: "Tài Khoản" })
+        ).unwrap();
         setpermissionAction(result);
-        
       } catch (error) {
         console.error("Error fetching accounts or permissions:", error);
       }
     };
-    
+
     fetchData();
   }, [dispatch, pageSize]);
-  
-  useEffect(()=>{
-    const connection=getConnection()
+
+  useEffect(() => {
+    const connection = getConnection();
     const connectSignalR = async () => {
       try {
         if (connection && connection.state === "Disconnected") {
@@ -47,19 +53,21 @@ const Accounts = () => {
           console.log("Connected!");
         }
         connection.on("loadTaiKhoan", async () => {
-          await dispatch(fetchAccounts({ search: '', page: pageSize }));
+          await dispatch(fetchAccounts({ search: "", page: pageSize }));
         });
         connection.on("loadHanhDong", async () => {
-          const result = await dispatch(checkPermission({ maQuyen: maquyen, tenChucNang: "Tài Khoản" })).unwrap();
+          const result = await dispatch(
+            checkPermission({ maQuyen: maquyen, tenChucNang: "Tài Khoản" })
+          ).unwrap();
           setpermissionAction(result);
-          console.log("account")
+          console.log("account");
         });
         console.log("Connected! update");
       } catch (error) {
         console.error("Connection failed: ", error);
       }
     };
-  
+
     connectSignalR();
 
     return () => {
@@ -68,11 +76,26 @@ const Accounts = () => {
         connection.off("loadHanhDong");
       }
     };
-  },[dispatch,pageSize,maquyen])
+  }, [dispatch, pageSize, maquyen]);
   const accountActionHandler = () => {};
   const deleteHandler = () => {};
-  const deleteClick = (id) => {
+  const deleteClick = async (id) => {
     setSelected(id);
+    const confirmDelete = window.confirm(
+      "Bạn có chắc chắn muốn xóa nhân viên này không?"
+    );
+    if (confirmDelete) {
+      try {
+        var result = await dispatch(deleteAccount(id));
+        if (result !== null) {
+          toast.success("Xóa Thành Công");
+          return;
+        }
+      } catch (error) {
+        toast.warning("Xóa Không Thành Công");
+        return;
+      }
+    }
     //setOpenDialog(true);
   };
   const editClick = (account) => {
@@ -91,11 +114,11 @@ const Accounts = () => {
     </thead>
   );
   const TableRow = ({ account }) => (
-    <tr className='border-b border-gray-200 text-gray-600 hover:bg-gray-400/10'>
-      <td className='p-2'>
-        <div className='flex items-center gap-3'>
-          <div className='w-9 h-9 rounded-full text-white flex items-center justify-center text-sm bg-blue-700'>
-            <span className='text-xs md:text-sm text-center'>
+    <tr className="border-b border-gray-200 text-gray-600 hover:bg-gray-400/10">
+      <td className="p-2">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full text-white flex items-center justify-center text-sm bg-blue-700">
+            <span className="text-xs md:text-sm text-center">
               {account.tenTaiKhoan}
             </span>
           </div>
@@ -103,29 +126,28 @@ const Accounts = () => {
         </div>
       </td>
 
-      <td className='p-2'>{account.nhomQuyen ? account.nhomQuyen.tenQuyen : "N/A"}</td>
-      <td className='p-2'>{account.tenTaiKhoan}</td>
-      <td className='p-2'>{account.matKhau}</td>
-      <td className='p-2 flex gap-4 justify-end'>
-
-        {
-          permissionAction.includes("Sửa") &&
+      <td className="p-2">
+        {account.nhomQuyen ? account.nhomQuyen.tenQuyen : "N/A"}
+      </td>
+      <td className="p-2">{account.tenTaiKhoan}</td>
+      <td className="p-2">{account.matKhau}</td>
+      <td className="p-2 flex gap-4 justify-end">
+        {permissionAction.includes("Sửa") && (
           <Button
-          className='text-blue-600 hover:text-blue-500 font-semibold sm:px-0'
-          label='Edit'
-          type='button'
-          onClick={() => editClick(account)}
-        />
-        }
-        {
-          permissionAction.includes("Xóa") &&
+            className="text-blue-600 hover:text-blue-500 font-semibold sm:px-0"
+            label="Edit"
+            type="button"
+            onClick={() => editClick(account)}
+          />
+        )}
+        {permissionAction.includes("Xóa") && (
           <Button
-          className='text-red-700 hover:text-red-500 font-semibold sm:px-0'
-          label='Delete'
-          type='button'
-          onClick={() => deleteClick(account.maNhanVien)}
-        />
-        }
+            className="text-red-700 hover:text-red-500 font-semibold sm:px-0"
+            label="Delete"
+            type="button"
+            onClick={() => deleteClick(account.maNhanVien)}
+          />
+        )}
       </td>
     </tr>
   );
@@ -135,14 +157,14 @@ const Accounts = () => {
       <div className="w-full md:px-1 px-0 mb-6">
         <div className="flex items-center justify-between mb-8">
           <Title title="Tài Khoản" />
-          {permissionAction.includes("Thêm") &&
-          <Button
-          label="Thêm Tài Khoản Mới"
-          icon={<IoMdAdd className="text-lg" />}
-          className="flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md 2xl:py-2.5"
-          onClick={() => setOpen(true)}
-        />
-          }
+          {permissionAction.includes("Thêm") && (
+            <Button
+              label="Thêm Tài Khoản Mới"
+              icon={<IoMdAdd className="text-lg" />}
+              className="flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md 2xl:py-2.5"
+              onClick={() => setOpen(true)}
+            />
+          )}
         </div>
 
         <div className="bg-white px-2 md:px-4 py-4 shadow-md rounded">
@@ -150,9 +172,11 @@ const Accounts = () => {
             <table className="w-full mb-5">
               <TableHeader />
               <tbody>
-                {accounts?.map((account, index) => (
-                  <TableRow key={index} account={account} />
-                ))}
+                {accounts
+                  ?.filter((account) => account.trangThai === true)
+                  .map((account, index) => (
+                    <TableRow key={index} account={account} />
+                  ))}
               </tbody>
             </table>
           </div>
@@ -166,8 +190,11 @@ const Accounts = () => {
         account={accounts}
         key={new Date().getTime().toString()}
       />
-      <UpdateAccount  openUpdate={openUpdate}
-        setOpenUpdate={setOpenUpdate} accountData={selectedAccount}/>
+      <UpdateAccount
+        openUpdate={openUpdate}
+        setOpenUpdate={setOpenUpdate}
+        accountData={selectedAccount}
+      />
       {/* <ConfirmatioDialog
         open={openDialog}
         setOpen={setOpenDialog}

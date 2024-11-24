@@ -8,12 +8,20 @@ import ConfirmatioDialog, { UserAction } from "../components/Dialogs";
 import Title from "../components/Title";
 import { useDispatch, useSelector } from "react-redux";
 import PageSizeSelect from "../components/PageSizeSelect";
-import { fetchEmployees } from "../redux/employees/employeeSlice";
+import {
+  deleteEmployee,
+  fetchEmployees,
+} from "../redux/employees/employeeSlice";
 import AddEmployee from "../components/employee/AddEmployee";
-import { HubConnectionBuilder, LogLevel,HttpTransportType } from "@microsoft/signalr";
+import {
+  HubConnectionBuilder,
+  LogLevel,
+  HttpTransportType,
+} from "@microsoft/signalr";
 import UpdateEmployee from "../components/employee/UpdateEmployee";
 import { checkPermission } from "../redux/permissiondetail/permissionDetailSlice";
 import getConnection from "../hub/signalRConnection";
+import { toast } from "react-toastify";
 const Employees = () => {
   const [pageSize, setPageSize] = useState(10);
   const employees = useSelector((state) => state.employees.list);
@@ -24,7 +32,9 @@ const Employees = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [permissionAction, setpermissionAction] = useState([]);
-  const maquyen=Number(localStorage.getItem("permissionId"))
+  const maquyen = Number(localStorage.getItem("permissionId"));
+  const chucVu = localStorage.getItem("role");
+  const departmentId = localStorage.getItem("departmentId");
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchData = async () => {
@@ -33,46 +43,69 @@ const Employees = () => {
         checkPermission({ maQuyen: maquyen, tenChucNang: "Nhân Viên" })
       ).unwrap();
       setpermissionAction(result);
-     
     };
     fetchData();
   }, [dispatch, pageSize]);
   useEffect(() => {
-    const connection=getConnection();
+    const connection = getConnection();
     const connectSignalR = async () => {
       try {
         if (connection && connection.state === "Disconnected") {
           await connection.start();
           console.log("Connected!");
         }
-        connection.on("loadEmployee",async () => {
-         await dispatch(fetchEmployees({ search: "", page: pageSize }));
+        connection.on("loadEmployee", async () => {
+          await dispatch(fetchEmployees({ search: "", page: pageSize }));
         });
 
         connection.on("loadHanhDong", async () => {
-          const result = await dispatch(checkPermission({ maQuyen: maquyen, tenChucNang: "Nhân Viên" })).unwrap();
+          const result = await dispatch(
+            checkPermission({ maQuyen: maquyen, tenChucNang: "Nhân Viên" })
+          ).unwrap();
           setpermissionAction(result);
-          console.log("employee")
+          console.log("employee");
         });
         console.log("Connected! update");
       } catch (error) {
         console.error("Connection failed: ", error);
       }
     };
-    connectSignalR(); 
+    connectSignalR();
     return () => {
       if (connection) {
         connection.off("loadEmployee");
         connection.off("loadHanhDong");
       }
     };
-  }, [dispatch, pageSize,maquyen]);
+  }, [dispatch, pageSize, maquyen]);
+  const filteredEmployees =
+    chucVu === "Trưởng Phòng"
+      ? employees?.filter(
+          (employee) => employee.maPhongBan === Number(departmentId)
+        )
+      : employees;
   const employeeActionHandler = () => {};
   const deleteHandler = () => {};
 
-  const deleteClick = (id) => {
+  const deleteClick = async (id) => {
     setSelected(id);
-    setOpenDialog(true);
+    //setOpenDialog(true);
+    const confirmDelete = window.confirm(
+      "Bạn có chắc chắn muốn xóa nhân viên này không?"
+    );
+
+    if (confirmDelete) {
+      try {
+        var result = await dispatch(deleteEmployee(id));
+        if (result !== null) {
+          toast.success("Xóa Thành Công");
+          return;
+        }
+      } catch (error) {
+        toast.warning("Xóa Không Thành Công");
+        return;
+      }
+    }
   };
 
   const editClick = (employee) => {
@@ -161,7 +194,7 @@ const Employees = () => {
             <table className="w-full mb-5">
               <TableHeader />
               <tbody>
-                {employees?.map((employee, index) => (
+                {filteredEmployees?.map((employee, index) => (
                   <TableRow key={index} employee={employee} />
                 ))}
               </tbody>
