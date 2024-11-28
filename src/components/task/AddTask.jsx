@@ -37,6 +37,7 @@ const AddTask = ({ open, setOpen, phanDuAn, congViecCha, duAn }) => {
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [stage, setStage] = useState(task?.stage?.toUpperCase() || LISTS[0]);
   const [selectedDepartment, setSelectedDepartment] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [priority, setPriority] = useState(
     task?.priority?.toUpperCase() || PRIORITY[2]
   );
@@ -78,6 +79,7 @@ const AddTask = ({ open, setOpen, phanDuAn, congViecCha, duAn }) => {
       mucDoHoanThanh: 0,
     };
     try {
+      setLoading(true);
       const result = await dispatch(addTask(CongViec)).unwrap();
       if (Array.isArray(selectedDepartment) && selectedDepartment.length > 0) {
         const departmentPromises = selectedDepartment.map(
@@ -193,6 +195,8 @@ const AddTask = ({ open, setOpen, phanDuAn, congViecCha, duAn }) => {
     } catch (e) {
       toast.error("Thêm thất bại")
 
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -291,10 +295,13 @@ const AddTask = ({ open, setOpen, phanDuAn, congViecCha, duAn }) => {
               </div>
 
               <div className="bg-gray-50 py-6 sm:flex sm:flex-row-reverse gap-4">
-                {uploading ? (
-                  <span className="text-sm py-2 text-red-500">
-                    Đang tải tài liệu
-                  </span>
+                {loading ? (
+                  <Button
+                  label="Đang gửi..."
+                  type="button"
+                  className="bg-gray-400 px-8 text-sm font-semibold text-white cursor-not-allowed"
+                  disabled
+                />
                 ) : (
                   <Button
                     label="Gửi"

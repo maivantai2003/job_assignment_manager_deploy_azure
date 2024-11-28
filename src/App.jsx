@@ -25,6 +25,8 @@ import Tasktransfer from "./pages/TaskTransfer";
 import GanttApp from "./components/task/Gant";
 import FileView from "./components/taskassigment/FileView";
 import Home from "./pages/HomePage";
+import SeachTask from "./components/project/SearchTask";
+import CalendarView from "./components/task/CalendarView";
 function Layout() {
   const dispatch=useDispatch();
   const location = useLocation();
@@ -133,11 +135,13 @@ function App() {
           <Route path='/task/:id' element={<TaskDetails />} />
           <Route path='/milestones' element={<ChatBox />} /> 
           <Route path='/tasktransfer' element={<Tasktransfer/>}/>
+          <Route path='/calendar' element={<CalendarView/>}/>
           <Route path='/home' element={<Home/>}/>
           <Route path="/gant" element={<GanttApp/>}/>
           <Route path="/taskassignment/fileView/:id" element={<FileView/>}/>
           <Route path="/fileView/:id" element={<FileView/>}/>
           <Route path="*" element={<Navigate to="/home" />} />
+          <Route path="/search" element={<SeachTask/>}></Route>
         </Route>
         <Route path='/log-in' element={<Login />} />
       </Routes>

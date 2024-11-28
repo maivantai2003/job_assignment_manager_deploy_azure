@@ -34,6 +34,7 @@ import { AttachFile } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { addDetailExchange } from "../../redux/detailexchange/detailexchangeSlice";
 import getConnection from "../../hub/signalRConnection";
+import { listDepartment } from "../../redux/workdepartment/workdepartmentSlice";
 const DetailTask = ({
   expanded,
   setExpanded,
@@ -58,6 +59,7 @@ const DetailTask = ({
   const [isSending, setIsSending] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [department, setDepartment] = useState([]);
   const dispatch = useDispatch();
   const exchanges = useSelector((state) => state.exchanges.list);
   const files = useSelector((state) => state.file.list);
@@ -67,6 +69,8 @@ const DetailTask = ({
       try {
         await dispatch(fetchAllFile());
         await dispatch(findExchangeByTask(task.maCongViec));
+        var result = await dispatch(listDepartment(task.maCongViec)).unwrap();
+        setDepartment(result);
       } catch (error) {
         console.log(error);
       } finally {
@@ -76,7 +80,7 @@ const DetailTask = ({
     loadData();
   }, [dispatch, task.maCongViec]);
   useEffect(() => {
-    const connection = getConnection()
+    const connection = getConnection();
     const startConnection = async () => {
       try {
         if (connection.state === "Disconnected") {
@@ -93,7 +97,9 @@ const DetailTask = ({
             await dispatch(findExchangeByTask(task.maCongViec));
           } catch (error) {
             console.error("Error loading data on ReceiveMessage: ", error);
-            toast.error("Có lỗi khi tải dữ liệu tin nhắn. Vui lòng tải lại trang!");
+            toast.error(
+              "Có lỗi khi tải dữ liệu tin nhắn. Vui lòng tải lại trang!"
+            );
           }
         });
         connection.on("UserJoined", (message) => {
@@ -159,7 +165,7 @@ const DetailTask = ({
           } catch (err) {
             toast.warning("Upload File Thất Bại");
             return;
-          }finally {
+          } finally {
             setIsSending(false);
           }
           await connection.invoke("TraoDoiThongTin", maCongViec);
@@ -178,13 +184,15 @@ const DetailTask = ({
   };
   const handleFileChange = (event) => {
     const maxFileSize = 10 * 1024 * 1024;
-    const validFiles = [...event.target.files].filter(file => file.size <= maxFileSize);
-  
+    const validFiles = [...event.target.files].filter(
+      (file) => file.size <= maxFileSize
+    );
+
     if (validFiles.length < event.target.files.length) {
-      toast.warning("File có kích thước không vượt quá 10MB")
-      return
+      toast.warning("File có kích thước không vượt quá 10MB");
+      return;
     }
-  
+
     setSelectedFiles([...selectedFiles, ...validFiles]);
   };
   const handleUpload = async () => {
@@ -332,7 +340,7 @@ const DetailTask = ({
 
         {/* Assignee and Due Date */}
         <div className="mb-1 px-6 flex justify-between items-center">
-          <div className="mb-6 px-6">
+          <div className="mb-6 px-1">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <span className="text-gray-700 text-sm font-medium">
@@ -343,7 +351,9 @@ const DetailTask = ({
                     <div
                       key={index}
                       className={`flex items-center py-1 px-3 rounded-full text-sm ${
-                        member.trangThaiCongViec ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                        member.trangThaiCongViec
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
                       }`}
                     >
                       <span>{member.nhanVien?.tenNhanVien || "Unknown"}</span>
@@ -353,14 +363,34 @@ const DetailTask = ({
               </div>
             </div>
           </div>
+
           <div className="flex items-center">
             <span className="text-red-600 mr-3 text-sm">{date}</span>
-            <span className="bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-xs">
+            {/* <span className="bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-xs">
               Limited access
-            </span>
+            </span> */}
           </div>
         </div>
+        {/* Hiển thị tên phòng ban */}
+        {department?.length > 0 && (
+          <div className="mt-2 px-6 flex items-center">
+            <span className="text-gray-700 text-sm font-medium mr-2">
+              Phòng Ban Phụ Trách:
+            </span>
+            <div className="flex items-center space-x-2">
+              {department.map((dep, index) => (
+                <div
+                  key={index}
+                  className="flex items-center py-1 px-3 rounded-full text-sm bg-blue-100 text-blue-700"
+                >
+                  <span>{dep || "Unknown"}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
+        {/* Hiển thị tên phòng ban */}
         <div className="mb-6 px-6">
           <p className="text-gray-700 font-medium">Mô Tả</p>
           <textarea

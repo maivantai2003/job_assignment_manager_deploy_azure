@@ -9,7 +9,6 @@ const EmployeeSelectDepartment = ({ selectedEmployees, setSelectedEmployees,maPh
     useEffect(() => {
         dispatch(fetchEmployees({ search: '', page: 30 }));
     }, [dispatch]);
-    console.log(nhanViens)
     const handleSelectChange = (e) => {
         const maNhanVien = e.target.value;
         const selectedEmployee = nhanviens.find((item) => item.maNhanVien === Number(maNhanVien));

@@ -35,11 +35,11 @@ const AddTaskTransfer = ({
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [transferNote, setTransferNote] = useState("");
   const [loading, setLoading] = useState(true);
+  const [loadingTransfer, setLoadingTransfer] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [showEndDate, setShowEndDate] = useState(false);
   const [endDate, setEndDate] = useState("");
   const [selectedCurrentEmployee, setSelectedCurrentEmployee] = useState("");
-  //console.log(thoiGianKetThuc);
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
@@ -86,6 +86,7 @@ const AddTaskTransfer = ({
     var arrNhanVien = selectedCurrentEmployee.split("-");
     console.log(arrNhanVien);
     try {
+      setLoadingTransfer(true)
       if (showEndDate) {
         const updateDateResult = await dispatch(
           updateTaskDay({
@@ -164,6 +165,8 @@ const AddTaskTransfer = ({
     } catch (e) {
       toast.error("Chuyển giao công việc không thành công");
       console.log(e);
+    }finally{
+      setLoadingTransfer(false)
     }
   };
   const clearForm=()=>{
@@ -278,11 +281,20 @@ const AddTaskTransfer = ({
               </div>
             )}
             <div className="bg-gray-50 py-6 sm:flex sm:flex-row-reverse gap-4">
-              <Button
-                label="Chuyển"
-                type="submit"
-                className="bg-blue-600 px-8 text-sm font-semibold text-white hover:bg-blue-700 sm:w-auto"
-              />
+            {loadingTransfer ? (
+                   <Button
+                   label="Đang chuyển..."
+                   type="button"
+                   className="bg-gray-400 px-8 text-sm font-semibold text-white cursor-not-allowed"
+                   disabled
+                 />
+                ) : (
+                  <Button
+                    label="Chuyển"
+                    type="submit"
+                    className="bg-blue-600 px-8 text-sm font-semibold text-white hover:bg-blue-700  sm:w-auto"
+                  />
+                )}
               <Button
                 type="button"
                 className="bg-white px-5 text-sm font-semibold text-gray-900 sm:w-auto"

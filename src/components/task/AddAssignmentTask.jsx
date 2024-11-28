@@ -35,6 +35,7 @@ const AddAssignmentTask = ({
   const [stage, setStage] = useState(task?.stage?.toUpperCase() || LISTS[0]);
   const [assets, setAssets] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [loading, setloading] = useState(false);
   const submitHandler = async (data) => {
     if (selectedEmployees.length === 0) {
       toast.warning("Vui lòng chọn nhân viên");
@@ -48,6 +49,7 @@ const AddAssignmentTask = ({
       return;
     }
     try {
+      setloading(true)
       if (Array.isArray(selectedEmployees) && selectedEmployees.length > 0) {
         const employeePromises = selectedEmployees.map(async (employee) => {
           console.log(await dispatch(
@@ -98,6 +100,8 @@ const AddAssignmentTask = ({
     } catch (e) {
       toast.error("Thêm thất bại");
       console.log(e);
+    }finally{
+      setloading(false)
     }
   };
   const handleSelect = (e) => {
@@ -124,10 +128,13 @@ const AddAssignmentTask = ({
                 nhanViens={nhanViens}
               />
               <div className="bg-gray-50 py-6 sm:flex sm:flex-row-reverse gap-4">
-                {uploading ? (
-                  <span className="text-sm py-2 text-red-500">
-                    Đang tải tài liệu
-                  </span>
+                {loading ? (
+                  <Button
+                  label="Đang gửi..."
+                  type="button"
+                  className="bg-gray-400 px-8 text-sm font-semibold text-white cursor-not-allowed"
+                  disabled
+                />
                 ) : (
                   <Button
                     label="Thêm"

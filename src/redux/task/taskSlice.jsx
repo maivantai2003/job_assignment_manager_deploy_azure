@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchTasks as fetchAPI, addTask as addAPI, updateTask as updateAPI,fetchByIdTask as fetchByIdAPI,updateCompleteTask as updateCompleteTaskAPI
-  ,updateTaskDay as updateTaskDayAPI
+  ,updateTaskDay as updateTaskDayAPI,searchTasks as searchAPI
  } from './taskAPI';
 
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async ({ search, page }) => {
@@ -29,8 +29,13 @@ export const updateTaskDay = createAsyncThunk('tasks/updateTaskDay', async ({ id
   const response = await updateTaskDayAPI(id, thoiGianKetThuc);
   return response;
 });
+export const searchTasks = createAsyncThunk('tasks/searchTask', async ({ nhanVien,phongBan,mucDo,trangThai,tenCongViec}) => {
+  const response = await searchAPI(nhanVien,phongBan,mucDo,trangThai,tenCongViec);
+  return response;
+});
 const initialState = {
   list: [],
+  searchResults: [],
   loading: false,
   error: null,
   status: "All"
@@ -88,7 +93,20 @@ const taskSlice = createSlice({
         if (index !== -1) {
           state.list[index] = { ...state.list[index], thoiGianKetThuc: action.payload.thoiGianKetThuc };
         }
-      });
+      }).addCase(searchTasks.pending, (state) => {
+        state.loading = true;
+        state.status = 'searching';
+      })
+      .addCase(searchTasks.fulfilled, (state, action) => {
+        state.loading = false;
+        state.status = 'searchSucceeded';
+        state.searchResults = action.payload;
+      })
+      .addCase(searchTasks.rejected, (state, action) => {
+        state.loading = false;
+        state.status = 'searchFailed';
+        state.error = action.error.message;
+      });;
   },
 });
 

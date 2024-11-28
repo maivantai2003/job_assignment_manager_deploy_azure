@@ -129,7 +129,6 @@ const DepartmentAssignmentItem = ({ congViecPhongBan, filterTask }) => {
   if (!congviec) {
     return <p>not found</p>;
   }
-  console.log(congviec)
   if (
     (filterTask === "completed" && !congviec.trangThaiCongViec) ||
     (filterTask === "incomplete" && congviec.trangThaiCongViec)
@@ -332,6 +331,7 @@ const DepartmentAssignmentItem = ({ congViecPhongBan, filterTask }) => {
         tenCongViec={congviec.tenCongViec}
         maPhongBan={maPhongBan}
         currentEmployee={congviec?.phanCongs}
+        thoiGianKetThuc={congviec.thoiGianKetThuc}
       />
     </div>
   );

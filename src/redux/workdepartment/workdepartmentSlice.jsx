@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchWorkDepartment as fetchAPI, addWorkDepartment as addAPI, updateWorkDepartment as updateAPI, fetchByIdWorkDepartment as fetchByIdAPI,fetchByIdDepartment as fetchByIdDepartmentAPI} from './workdepartmentAPI';
+import { fetchWorkDepartment as fetchAPI, addWorkDepartment as addAPI, updateWorkDepartment as updateAPI,
+   fetchByIdWorkDepartment as fetchByIdAPI,fetchByIdDepartment as fetchByIdDepartmentAPI,
+   ListDepartmentTask as listDepartmentAPI} from './workdepartmentAPI';
 
 
 export const fetchWorkDepartment = createAsyncThunk('workDepartment/fetchWorkDepartment', async ({ search, page }) => {
@@ -20,6 +22,10 @@ export const fetchByIdWorkDepartment = createAsyncThunk('workDepartment/fetchByI
 });
 export const fetchByIdDepartment = createAsyncThunk('workDepartment/fetchByIdDepartment', async (id) => {
     const response = await fetchByIdDepartmentAPI(id);
+    return response;
+  });
+export const listDepartment = createAsyncThunk('workDepartment/listDepartment', async (id) => {
+    const response = await listDepartmentAPI(id);
     return response;
   });
 

@@ -23,3 +23,7 @@ export const fetchByIdDepartment = async (id) => {
     const response = await axiosInstance.get("CongViecPhongBan"+`/GetPhongBanPhanCong/${id}`);
     return response.data;
 };
+export const ListDepartmentTask = async (id) => {
+    const response = await axiosInstance.get("CongViecPhongBan"+`/GetListDepartment?id=`+id);
+    return response.data;
+};

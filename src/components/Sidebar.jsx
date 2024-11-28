@@ -7,6 +7,7 @@ import {
   FaUser,
   FaExchangeAlt,
   FaHome,
+  FaSearch,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -366,7 +367,15 @@ const Sidebar = () => {
           <NavLink el={link} key={link.label} />
         ))}
       </div>
-
+      <div className="pt-4">
+        <button
+          className="w-full flex gap-2 p-2 items-center text-lg text-gray-800 hover:bg-gray-100 rounded-lg transition"
+          onClick={() => navigate("/search")}
+        >
+          <FaSearch />
+          <span>Tìm Kiếm</span>
+        </button>
+      </div>
       {/* <div className="pt-4">
         <button
           className="w-full flex gap-2 p-3 items-center text-lg text-gray-800 hover:bg-gray-100 rounded-lg transition"

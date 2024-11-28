@@ -5,7 +5,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Loading from "../components/Loader";
 import Title from "../components/Title";
 import Button from "../components/Button";
-import { IoMdAdd, IoMdClock } from "react-icons/io";
+import { IoMdAdd, IoMdCalendar, IoMdClock } from "react-icons/io";
 import Tabs from "../components/Tabs";
 import TaskTitle from "../components/TaskTitle";
 import BoardView from "../components/BoardView";
@@ -132,6 +132,16 @@ const Tasks = () => {
       toast.warning("Chưa có dữ liệu công việc")
     }
   };
+  const toggleCalendarModal=()=>{
+    if(duan.phanDuAn===null || duan.phanDuAn.length==0){
+      toast.warning("Chưa có dữ liệu phần dự án")
+    }else if(duan.phanDuAn.some(phan => phan.congViecs?.length > 0)){
+      navigate("/calendar", { state: { duan } });
+    }
+    else{
+      toast.warning("Chưa có dữ liệu công việc")
+    }
+  }
   return loading ? (
     <div className="py-10">
       <Loading />
@@ -155,6 +165,12 @@ const Tasks = () => {
               onClick={toggleTimelineModal}
               label="Sơ đồ gant"
               icon={<IoMdAdd className="text-lg" />}
+              className="flex flex-row-reverse gap-1 items-center bg-green-600 text-white rounded-md py-2 2xl:py-2.5"
+            />
+            <Button
+              onClick={toggleCalendarModal}
+              label="Calendar"
+              icon={<IoMdCalendar className="text-lg" />}
               className="flex flex-row-reverse gap-1 items-center bg-green-600 text-white rounded-md py-2 2xl:py-2.5"
             />
           </div>

@@ -36,6 +36,7 @@ const UpdateTask = ({ openUpdate, setOpenUpdate, phanDuAn,duAn, task,phanCong })
   const [priority, setPriority] = useState(task?.priority?.toUpperCase() || PRIORITY[2]);
   const [assets, setAssets] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [loading, setloading] = useState(false);
   useEffect(() => {
     const loadData = async () => {
       if (task) {
@@ -83,6 +84,7 @@ const UpdateTask = ({ openUpdate, setOpenUpdate, phanDuAn,duAn, task,phanCong })
     console.log(selectedEmployees)
     console.log(selectedEmployees.map((item) => item.email).join(","))
     try {
+      setloading(true)
       var result=await dispatch(updateTask({id:CongViec.maCongViec,task:CongViec}))
       console.log(result)
       if(result.payload===true){
@@ -92,7 +94,7 @@ const UpdateTask = ({ openUpdate, setOpenUpdate, phanDuAn,duAn, task,phanCong })
             ngayCapNhat: new Date().toISOString(),
             noiDung: `Cập nhật công việc: công việc ${
               CongViec.tenCongViec
-            } đã được cập nhật xin bạn vui lòng truy cập vào hệ thống để xem chi tiết`,
+            } được cập nhật`,
           })
         );
         await dispatch(
@@ -114,7 +116,7 @@ const UpdateTask = ({ openUpdate, setOpenUpdate, phanDuAn,duAn, task,phanCong })
                 name: employee.tenNhanVien,
                 toGmail: employee.email,
                 subject: "Cập nhật công việc",
-                body: "Công việc "+CongViec.tenCongViec+" đã được cập nhật vui lòng kiểm tra công việc",
+                body: "Công việc "+CongViec.tenCongViec+" đã được cập nhật vui lòng kiểm tra.",
               })
             )
           );
@@ -127,6 +129,8 @@ const UpdateTask = ({ openUpdate, setOpenUpdate, phanDuAn,duAn, task,phanCong })
     } catch (e) {
       console.log(e);
       toast.success("Cập Nhật Không Thành Công")
+    }finally{
+      setloading(false)
     }
   };
 
@@ -210,11 +214,20 @@ const UpdateTask = ({ openUpdate, setOpenUpdate, phanDuAn,duAn, task,phanCong })
             </div>
 
             <div className="bg-gray-50 py-6 sm:flex sm:flex-row-reverse gap-4">
-              <Button
-                label="Gửi"
-                type="submit"
-                className="bg-blue-600 px-8 text-sm font-semibold text-white hover:bg-blue-700  sm:w-auto"
-              />
+             {loading ? (
+                  <Button
+                  label="Đang gửi..."
+                  type="button"
+                  className="bg-gray-400 px-8 text-sm font-semibold text-white cursor-not-allowed"
+                  disabled
+                />
+                ) : (
+                  <Button
+                    label="Gửi"
+                    type="submit"
+                    className="bg-blue-600 px-8 text-sm font-semibold text-white hover:bg-blue-700  sm:w-auto"
+                  />
+                )}
               <Button
                 type="button"
                 className="bg-white px-5 text-sm font-semibold text-gray-900 sm:w-auto"

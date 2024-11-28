@@ -25,4 +25,7 @@ export const updateTaskDay = async (id, thoiGianKetThuc) => {
     return response.data;
 };
 
-
+export const searchTasks = async (nhanVien, phongBan, mucDo, trangThai, tenCongViec) => {
+    const response = await axiosInstance.get("CongViec"+`/SeachTasks?nhanVien=${nhanVien}&phongBan=${phongBan}&mucDo=${mucDo}&trangThai=${trangThai}&tenCongViec=${tenCongViec}`);
+    return response.data;
+};

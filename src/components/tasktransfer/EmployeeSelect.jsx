@@ -8,7 +8,6 @@ const EmployeeSelectTransfer = ({ selectedEmployees, setSelectedEmployees,maPhon
     useEffect(() => {
         dispatch(fetchEmployees({ search: '', page: 30 }));
     }, [dispatch]);
-    console.log(maPhongBan)
     const handleSelectChange = (e) => {
         const maNhanVien = e.target.value;
         const selectedEmployee = nhanviens.find((item) => item.maNhanVien === Number(maNhanVien));
