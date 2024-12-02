@@ -60,7 +60,6 @@ const TaskGroup = ({ phanduan, duAn }) => {
     acc[parentId].push(task);
     return acc;
   }, {});
-
   const renderTasks = (tasks, duAn) => {
     return tasks.map((task) => (
       <div key={task.maCongViec}>

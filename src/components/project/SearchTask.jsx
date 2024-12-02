@@ -8,6 +8,8 @@ import clsx from "clsx";
 import Button from "../Button";
 import { IoMdTime } from "react-icons/io";
 import TaskHistory from "../task/TaskHistory";
+import { useNavigate } from "react-router-dom";
+import { CiViewList } from "react-icons/ci";
 const SeachTask = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [department, setDepartment] = useState("All");
@@ -20,10 +22,9 @@ const SeachTask = () => {
   const [openTaskHistory, setOpenTaskHistory] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const tasks = useSelector((state) => state.tasks.searchResults);
-  useEffect(()=>{
-    
-  },[dispatch])
+  useEffect(() => {}, [dispatch]);
   const handleSearch = async () => {
     setLoading(true);
     try {
@@ -62,7 +63,7 @@ const SeachTask = () => {
       return "bg-green-500";
     }
   };
-  const filteredResults = filterByDate(tasks)
+  const filteredResults = filterByDate(tasks);
   return (
     <div>
       <SearchFilter
@@ -227,13 +228,18 @@ const SeachTask = () => {
                         icon={<IoMdTime className="text-base" />}
                         className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7"
                       />
+                      <Button
+                        onClick={() => navigate("/fileView/" + task.maCongViec)}
+                        icon={<CiViewList className="text-base" />}
+                        className="flex flex-row-reverse items-center bg-blue-600 text-white rounded-md py-0.5 px-1 text-xs h-7"
+                      ></Button>
                     </div>
                   </div>
                   <TaskHistory
-                      openTaskHistory={openTaskHistory}
-                      setOpenTaskHistory={setOpenTaskHistory}
-                      maCongViec={task.maCongViec}
-                    />
+                    openTaskHistory={openTaskHistory}
+                    setOpenTaskHistory={setOpenTaskHistory}
+                    maCongViec={task.maCongViec}
+                  />
                 </li>
               );
             })}
@@ -245,7 +251,6 @@ const SeachTask = () => {
           <p className="text-gray-500">Không tìm thấy công việc nào.</p>
         </div>
       )}
-      
     </div>
   );
 };

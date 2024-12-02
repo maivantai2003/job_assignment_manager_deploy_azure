@@ -447,7 +447,7 @@ const generateEmailTemplateForManager = (department, CongViec) => {
                       CongViec.thoiGianKetThuc
                     ).toLocaleDateString()}</span></p>
                     <p>Vui lòng kiểm tra lại chi tiết trong hệ thống quản lý công việc của chúng tôi.</p>
-                    <a href="http://localhost:3000/taskassignment" class="cta-button">Xem chi tiết công việc</a>
+                    <a href="https://job-assignment-manager-deploy-azure.vercel.app/taskassignment" class="cta-button">Xem chi tiết công việc</a>
                     <p>Trân trọng,</p>
                     <p>Đội ngũ quản lý dự án</p>
                 </div>
