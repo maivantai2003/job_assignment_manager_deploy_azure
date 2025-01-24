@@ -5,9 +5,13 @@ let connection;
 
 export function getConnection() {
   if (!connection) {
+    const tmp = JSON.parse(localStorage.getItem("authUser"));
+    const token = tmp.token;
+    console.log(token)
     connection = new HubConnectionBuilder()
       .withUrl(API_ENDPOINTS.HUB_URL, {
         transport: HttpTransportType.WebSockets | HttpTransportType.ServerSentEvents |  HttpTransportType.LongPolling,
+        accessTokenFactory:()=>token
       })
       .withAutomaticReconnect()
       .configureLogging(LogLevel.Information)

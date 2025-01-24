@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {AuthLogin} from "../redux/authen/authenSlice"
 import { toast } from "react-toastify";
+import getConnection from "../hub/signalRConnection";
 const Login = () => {
   //const { user } = useSelector((state) => state.auth);
   const {authUser,loading,error}=useSelector((state)=>state.authen)
@@ -33,9 +34,7 @@ const Login = () => {
         toast.warning("Vui lòng nhập đúng mật khẩu")
         return
       }
-      console.log(AuthRequest)
       const result = await dispath(AuthLogin(AuthRequest))
-      console.log(result)
       if(result.payload && result.payload.isSuccess){
         toast.success("Đăng nhập thành công")
         navigate('/home')
@@ -44,7 +43,7 @@ const Login = () => {
       }
     }catch(e){
       toast.warning("Lỗi khi đăng nhập")
-      //return
+      console.log(e)
     }
   };
 

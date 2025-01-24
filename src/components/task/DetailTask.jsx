@@ -35,6 +35,8 @@ import { toast } from "react-toastify";
 import { addDetailExchange } from "../../redux/detailexchange/detailexchangeSlice";
 import getConnection from "../../hub/signalRConnection";
 import { listDepartment } from "../../redux/workdepartment/workdepartmentSlice";
+import { use } from "react";
+import CallVideo from "./CallVideo";
 const DetailTask = ({
   expanded,
   setExpanded,
@@ -60,6 +62,7 @@ const DetailTask = ({
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [department, setDepartment] = useState([]);
+  const [callvideo,setOpenCallVideo]=useState(false)
   const dispatch = useDispatch();
   const exchanges = useSelector((state) => state.exchanges.list);
   const files = useSelector((state) => state.file.list);
@@ -306,6 +309,9 @@ const DetailTask = ({
     const imageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
     return imageTypes.includes(file.type);
   };
+  const handleVideoCall=()=>{
+    setOpenCallVideo(true)
+  }
   return (
     <>
       <div
@@ -320,15 +326,36 @@ const DetailTask = ({
       >
         {/* Close button */}
         <div className="flex justify-between p-4">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full focus:outline-none">
+          {/* <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full focus:outline-none">
             Mark Complete
-          </button>
+          </button> */}
+          <button
+    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none flex items-center"
+    onClick={handleVideoCall}
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={3}
+      stroke="currentColor"
+      className="w-5 h-5 mr-2"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m-1 0a1 1 0 01-1 1H5a1 1 0 01-1-1V9a1 1 0 011-1h8a1 1 0 011 1v5z"
+      />
+    </svg>
+    Call Video
+  </button>
           <button
             className="text-gray-500 hover:text-gray-700 focus:outline-none"
             onClick={() => setExpanded(false)}
           >
             ✖️
           </button>
+        
         </div>
 
         {/* Task Title */}
@@ -652,6 +679,9 @@ const DetailTask = ({
           </div>
         </div>
       </div>
+      {callvideo && (
+        <CallVideo setOpenCallVideo={setOpenCallVideo} maCongViec={task.maCongViec} />
+      )}
     </>
   );
 };

@@ -31,6 +31,7 @@ const Employees = () => {
   const [selected, setSelected] = useState(null);
   const [openUpdate, setOpenUpdate] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [newconnection, setnewConnection] = useState(null);
   const [permissionAction, setpermissionAction] = useState([]);
   const maquyen = Number(localStorage.getItem("permissionId"));
   const chucVu = localStorage.getItem("role");
@@ -108,9 +109,25 @@ const Employees = () => {
     }
   };
 
-  const editClick = (employee) => {
-    setSelectedEmployee(employee);
-    setOpenUpdate(true);
+  const editClick =async (employee) => {
+    console.log(employee.maNhanVien);
+    const con=getConnection()
+    try {
+          if (con.state === "Disconnected") {
+            await con.start();
+          }
+          //setnewConnection(con)
+          await con.invoke("SendMessageToUser",employee.maNhanVien+"","Hello Ní")
+          // con.on("ReceiveMessageTest", async (message) => {
+          //           console.log(message)
+          //         });
+          // await con.invoke("ThamGiaNhom",employee.maNhanVien+"")
+          // con.on("UserJoined", async (message) => {
+          //           console.log(message)
+          //         });
+          } catch (err) {
+            console.error("Connection failed: ", err);
+        }
   };
   const TableHeader = () => (
     <thead className="border-b border-gray-300">

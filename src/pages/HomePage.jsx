@@ -1,12 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Slider from 'react-slick';
 import image1 from '../assets/images/image1.jpg';
 import image2 from '../assets/images/image2.jpg';
 import image3 from '../assets/images/image3.jpg';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
+import getConnection from '../hub/signalRConnection';
 
 const Home = () => {
+    useEffect(() => {
+        const connection=getConnection()
+        const startConnection = async () => {
+          try {
+            if (connection && connection.state === "Disconnected") {
+              await connection.start();
+            }
+            connection.on("ReceiveMessageTest", async (message) => {
+                // if(targetUserId===localStorage.getItem("userId")+""){
+                //     console.log(message)
+                // }
+                console.log(message)
+
+                  });
+          } catch (err) {
+            console.error("Error while starting connection: ", err);
+          }
+        };
+        startConnection();
+        return () => {
+          if (connection) {
+            
+          }
+        };
+      }, []);
     const settings = {
         dots: true,
         infinite: true,
